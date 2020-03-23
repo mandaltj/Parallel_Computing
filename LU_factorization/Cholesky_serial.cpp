@@ -134,8 +134,8 @@ int main(int argc, char* argv[]){
     std::chrono::duration<double, std::milli> dur_ms = stop_time - start_time;
     std::cout << "Time elapsed Serial: " << dur_ms.count() << "ms" << std::endl;
 
-    Matrix A_check = multiply_matrix(L, U);
-    std::cout<<"Error: "<<calc_error(A, A_check)<<"\n";
+    //Matrix A_check = multiply_matrix(L, U);
+    //std::cout<<"Error: "<<calc_error(A, A_check)<<"\n";
 
     return 0;
 }
