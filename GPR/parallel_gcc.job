@@ -1,0 +1,326 @@
+#BSUB -n 20 -R 'select[nxt] rusage[mem=1024] span[ptile=20]' -M 1024
+#BSUB -J parallel_gcc -o parallel_gcc.%J -L /bin/bash -W 3:00
+##
+##NECESSARY JOB SPECIFICATIONS
+##BSUB -J JobName             # Set the job name to "JobName"
+##BSUB -L /bin/bash           # Uses the bash login shell to initialize the job's execution environment.
+##BSUB -W hh:mm               # Sets job's runtime wall-clock limit in hours:minutes or just minutes (-mm)
+##BSUB -n NNN                 # NNN: total number of cores/jobslots to allocate for the job
+##BSUB -R "select[node-type]" # Select node-type: nxt, mem256gb, gpu, phi, mem1t, mem2t ...
+##BSUB -R "span[ptile=4]"    # XX:  number of cores/jobslots per node to use. Also, a node selection criterion.
+##BSUB -R "rusage[mem=nnn]"   # Reserves nnn MBs per process/CPU for the job
+##BSUB -M mm                  # Sets the per process enforceable memory limit to nnn MB
+##BSUB -o HW1_part1.%J       # Send stdout and stderr to "OUTPUTFILE.[jobID]"
+#
+# <--- at this point the current working directory is the one you submitted the job from.
+#
+module load intel/2017A       # load Intel software stack
+
+g++ -O3 -fopenmp -o GPR_parallel GPR_parallel.cpp
+
+#
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 10"
+./GPR_parallel 10 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 20"
+./GPR_parallel 20 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 30"
+./GPR_parallel 30 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 40"
+./GPR_parallel 40 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 50"
+./GPR_parallel 50 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 60"
+./GPR_parallel 60 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 70"
+./GPR_parallel 70 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 80"
+./GPR_parallel 80 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 90"
+./GPR_parallel 90 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 100"
+./GPR_parallel 100 0.5 0.5
+echo "============================"
+
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 10"
+./GPR_parallel 10 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 20"
+./GPR_parallel 20 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 30"
+./GPR_parallel 30 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 40"
+./GPR_parallel 40 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 50"
+./GPR_parallel 50 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 60"
+./GPR_parallel 60 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 70"
+./GPR_parallel 70 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 80"
+./GPR_parallel 80 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 90"
+./GPR_parallel 90 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 100"
+./GPR_parallel 100 0.5 0.5
+echo "============================"
+
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 10"
+./GPR_parallel 10 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 20"
+./GPR_parallel 20 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 30"
+./GPR_parallel 30 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 40"
+./GPR_parallel 40 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 50"
+./GPR_parallel 50 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 60"
+./GPR_parallel 60 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 70"
+./GPR_parallel 70 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 80"
+./GPR_parallel 80 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 90"
+./GPR_parallel 90 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 100"
+./GPR_parallel 100 0.5 0.5
+echo "============================"
+
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 10"
+./GPR_parallel 10 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 20"
+./GPR_parallel 20 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 30"
+./GPR_parallel 30 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 40"
+./GPR_parallel 40 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 50"
+./GPR_parallel 50 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 60"
+./GPR_parallel 60 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 70"
+./GPR_parallel 70 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 80"
+./GPR_parallel 80 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 90"
+./GPR_parallel 90 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 100"
+./GPR_parallel 100 0.5 0.5
+echo "============================"
+
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 10"
+./GPR_parallel 10 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 20"
+./GPR_parallel 20 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 30"
+./GPR_parallel 30 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 40"
+./GPR_parallel 40 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 50"
+./GPR_parallel 50 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 60"
+./GPR_parallel 60 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 70"
+./GPR_parallel 70 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 80"
+./GPR_parallel 80 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 90"
+./GPR_parallel 90 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 100"
+./GPR_parallel 100 0.5 0.5
+echo "============================"
+
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 10"
+./GPR_parallel 10 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 20"
+./GPR_parallel 20 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 30"
+./GPR_parallel 30 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 40"
+./GPR_parallel 40 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 50"
+./GPR_parallel 50 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 60"
+./GPR_parallel 60 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 70"
+./GPR_parallel 70 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 80"
+./GPR_parallel 80 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 90"
+./GPR_parallel 90 0.5 0.5
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 100"
+./GPR_parallel 100 0.5 0.5
+echo "============================"

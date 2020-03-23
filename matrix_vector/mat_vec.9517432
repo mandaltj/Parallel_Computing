@@ -1,0 +1,79 @@
+============================
+Dimension Size = 32768 OMP_NUM_THREADS=4
+Time elapsed Serial: 12655.5ms
+Time elapsed Parallel(static, 1): 1934.47ms
+Time elapsed Parallel(static, 4): 2004.36ms
+Time elapsed Parallel(static, 8): 1775.11ms
+Time elapsed Parallel(static, 16): 1978.2ms
+Time elapsed Parallel(static, 32): 1727.48ms
+Time elapsed Parallel(static, 64): 1697.39ms
+Time elapsed Parallel(static, 256): 1676.05ms
+Time elapsed Parallel(static, 512): 1677.3ms
+Time elapsed Parallel(static, 1024): 1677.42ms
+Time elapsed Parallel_test(static, 1): 1298.75ms
+Time elapsed Parallel_test(static, 4): 1297.15ms
+Time elapsed Parallel_test(static, 8): 1297.68ms
+Time elapsed Parallel_test(static, 16): 1292.9ms
+Time elapsed Parallel_test(static, 32): 1293.51ms
+Time elapsed Parallel_test(static, 64): 1292.65ms
+Time elapsed Parallel_test(static, 256): 1300.8ms
+Time elapsed Parallel_test(static, 512): 1295.8ms
+Time elapsed Parallel_test(static, 1024): 1295.58ms
+============================
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@nxt1631>
+Subject: Job 9517432: <mat_vec> in cluster <Main_Compute> Done
+
+Job <mat_vec> was submitted from host <login8> by user <tapojyoti.mandal> in cluster <Main_Compute>.
+Job was executed on host(s) <8*nxt1631>, in queue <sn_short>, as user <tapojyoti.mandal> in cluster <Main_Compute>.
+</home/tapojyoti.mandal> was used as the home directory.
+</scratch/user/tapojyoti.mandal/Parallel-Computing/matrix_vector> was used as the working directory.
+Started at Sun Mar  1 18:32:53 2020
+Results reported on Sun Mar  1 18:34:37 2020
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#BSUB -n 8 -R 'select[nxt] rusage[mem=2048] span[ptile=8]' -M 2048
+#BSUB -J mat_vec -o mat_vec.%J -L /bin/bash -W 1:00
+##
+##NECESSARY JOB SPECIFICATIONS
+##BSUB -J JobName             # Set the job name to "JobName"
+##BSUB -L /bin/bash           # Uses the bash login shell to initialize the job's execution environment.
+##BSUB -W hh:mm               # Sets job's runtime wall-clock limit in hours:minutes or just minutes (-mm)
+##BSUB -n NNN                 # NNN: total number of cores/jobslots to allocate for the job
+##BSUB -R "select[node-type]" # Select node-type: nxt, mem256gb, gpu, phi, mem1t, mem2t ...
+##BSUB -R "span[ptile=4]"    # XX:  number of cores/jobslots per node to use. Also, a node selection criterion.
+##BSUB -R "rusage[mem=nnn]"   # Reserves nnn MBs per process/CPU for the job
+##BSUB -M mm                  # Sets the per process enforceable memory limit to nnn MB
+##BSUB -o HW1_part1.%J       # Send stdout and stderr to "OUTPUTFILE.[jobID]"
+#
+# <--- at this point the current working directory is the one you submitted the job from.
+#
+module load intel/2017A       # load Intel software stack
+#
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "Dimension Size = 32768 OMP_NUM_THREADS=4"
+./matvec 32768
+echo "============================"
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   288.95 sec.
+    Max Memory :                                 4234 MB
+    Average Memory :                             3927.33 MB
+    Total Requested Memory :                     16384.00 MB
+    Delta Memory :                               12150.00 MB
+    Max Swap :                                   1 MB
+    Max Processes :                              4
+    Max Threads :                                12
+
+The output (if any) is above this job summary.
+

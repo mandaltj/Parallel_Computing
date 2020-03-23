@@ -1,0 +1,326 @@
+#BSUB -n 20 -R 'select[nxt] rusage[mem=1024] span[ptile=20]' -M 1024
+#BSUB -J LU_parallel -o LU_parallel.%J -L /bin/bash -W 3:00
+##
+##NECESSARY JOB SPECIFICATIONS
+##BSUB -J JobName             # Set the job name to "JobName"
+##BSUB -L /bin/bash           # Uses the bash login shell to initialize the job's execution environment.
+##BSUB -W hh:mm               # Sets job's runtime wall-clock limit in hours:minutes or just minutes (-mm)
+##BSUB -n NNN                 # NNN: total number of cores/jobslots to allocate for the job
+##BSUB -R "select[node-type]" # Select node-type: nxt, mem256gb, gpu, phi, mem1t, mem2t ...
+##BSUB -R "span[ptile=4]"    # XX:  number of cores/jobslots per node to use. Also, a node selection criterion.
+##BSUB -R "rusage[mem=nnn]"   # Reserves nnn MBs per process/CPU for the job
+##BSUB -M mm                  # Sets the per process enforceable memory limit to nnn MB
+##BSUB -o HW1_part1.%J       # Send stdout and stderr to "OUTPUTFILE.[jobID]"
+#
+# <--- at this point the current working directory is the one you submitted the job from.
+#
+module load intel/2017A       # load Intel software stack
+
+g++ -O3 -fopenmp -o LU_parallel LU_parallel.cpp
+
+#
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 1000"
+./LU_parallel 1000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 2000"
+./LU_parallel 2000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 3000"
+./LU_parallel 3000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 4000"
+./LU_parallel 4000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 5000"
+./LU_parallel 5000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 6000"
+./LU_parallel 6000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 7000"
+./LU_parallel 7000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 8000"
+./LU_parallel 8000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 9000"
+./LU_parallel 9000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=1
+echo "NUM_THREADS=1; Input Size = 10000"
+./LU_parallel 10000
+echo "============================"
+
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 1000"
+./LU_parallel 1000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 2000"
+./LU_parallel 2000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 3000"
+./LU_parallel 3000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 4000"
+./LU_parallel 4000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 5000"
+./LU_parallel 5000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 6000"
+./LU_parallel 6000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 7000"
+./LU_parallel 7000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 8000"
+./LU_parallel 8000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 9000"
+./LU_parallel 9000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=2
+echo "NUM_THREADS=2; Input Size = 10000"
+./LU_parallel 10000
+echo "============================"
+
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 1000"
+./LU_parallel 1000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 2000"
+./LU_parallel 2000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 3000"
+./LU_parallel 3000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 4000"
+./LU_parallel 4000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 5000"
+./LU_parallel 5000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 6000"
+./LU_parallel 6000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 7000"
+./LU_parallel 7000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 8000"
+./LU_parallel 8000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 9000"
+./LU_parallel 9000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=4
+echo "NUM_THREADS=4; Input Size = 10000"
+./LU_parallel 10000
+echo "============================"
+
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 1000"
+./LU_parallel 1000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 2000"
+./LU_parallel 2000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 3000"
+./LU_parallel 3000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 4000"
+./LU_parallel 4000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 5000"
+./LU_parallel 5000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 6000"
+./LU_parallel 6000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 7000"
+./LU_parallel 7000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 8000"
+./LU_parallel 8000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 9000"
+./LU_parallel 9000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=8
+echo "NUM_THREADS=8; Input Size = 10000"
+./LU_parallel 10000
+echo "============================"
+
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 1000"
+./LU_parallel 1000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 2000"
+./LU_parallel 2000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 3000"
+./LU_parallel 3000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 4000"
+./LU_parallel 4000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 5000"
+./LU_parallel 5000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 6000"
+./LU_parallel 6000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 7000"
+./LU_parallel 7000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 8000"
+./LU_parallel 8000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 9000"
+./LU_parallel 9000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=16
+echo "NUM_THREADS=16; Input Size = 10000"
+./LU_parallel 10000
+echo "============================"
+
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 1000"
+./LU_parallel 1000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 2000"
+./LU_parallel 2000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 3000"
+./LU_parallel 3000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 4000"
+./LU_parallel 4000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 5000"
+./LU_parallel 5000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 6000"
+./LU_parallel 6000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 7000"
+./LU_parallel 7000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 8000"
+./LU_parallel 8000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 9000"
+./LU_parallel 9000
+echo "============================"
+echo "============================"
+export OMP_NUM_THREADS=20
+echo "NUM_THREADS=20; Input Size = 10000"
+./LU_parallel 10000
+echo "============================"
