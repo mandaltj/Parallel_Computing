@@ -1,5 +1,5 @@
 #BSUB -n 20 -R 'select[nxt] rusage[mem=1024] span[ptile=20]' -M 1024
-#BSUB -J parallel_balance_gcc -o parallel_balance_gcc.%J -L /bin/bash -W 3:00
+#BSUB -J GPR_LU -o GPR_LU.%J -L /bin/bash -W 3:00
 ##
 ##NECESSARY JOB SPECIFICATIONS
 ##BSUB -J JobName             # Set the job name to "JobName"
@@ -16,311 +16,311 @@
 #
 module load intel/2017A       # load Intel software stack
 
-g++ -O3 -fopenmp -o GPR_parallel_balance GPR_parallel_balance.cpp
+g++ -O3 -fopenmp -o GPR_LU GPR_LU.cpp
 
 #
 echo "============================"
 export OMP_NUM_THREADS=1
 echo "NUM_THREADS=1; Input Size = 10"
-./GPR_parallel_balance 10 0.5 0.5
+./GPR_LU 10 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=1
 echo "NUM_THREADS=1; Input Size = 20"
-./GPR_parallel_balance 20 0.5 0.5
+./GPR_LU 20 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=1
 echo "NUM_THREADS=1; Input Size = 30"
-./GPR_parallel_balance 30 0.5 0.5
+./GPR_LU 30 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=1
 echo "NUM_THREADS=1; Input Size = 40"
-./GPR_parallel_balance 40 0.5 0.5
+./GPR_LU 40 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=1
 echo "NUM_THREADS=1; Input Size = 50"
-./GPR_parallel_balance 50 0.5 0.5
+./GPR_LU 50 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=1
 echo "NUM_THREADS=1; Input Size = 60"
-./GPR_parallel_balance 60 0.5 0.5
+./GPR_LU 60 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=1
 echo "NUM_THREADS=1; Input Size = 70"
-./GPR_parallel_balance 70 0.5 0.5
+./GPR_LU 70 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=1
 echo "NUM_THREADS=1; Input Size = 80"
-./GPR_parallel_balance 80 0.5 0.5
+./GPR_LU 80 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=1
 echo "NUM_THREADS=1; Input Size = 90"
-./GPR_parallel_balance 90 0.5 0.5
+./GPR_LU 90 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=1
 echo "NUM_THREADS=1; Input Size = 100"
-./GPR_parallel_balance 100 0.5 0.5
+./GPR_LU 100 0.5 0.5
 echo "============================"
 
 echo "============================"
 export OMP_NUM_THREADS=2
 echo "NUM_THREADS=2; Input Size = 10"
-./GPR_parallel_balance 10 0.5 0.5
+./GPR_LU 10 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=2
 echo "NUM_THREADS=2; Input Size = 20"
-./GPR_parallel_balance 20 0.5 0.5
+./GPR_LU 20 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=2
 echo "NUM_THREADS=2; Input Size = 30"
-./GPR_parallel_balance 30 0.5 0.5
+./GPR_LU 30 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=2
 echo "NUM_THREADS=2; Input Size = 40"
-./GPR_parallel_balance 40 0.5 0.5
+./GPR_LU 40 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=2
 echo "NUM_THREADS=2; Input Size = 50"
-./GPR_parallel_balance 50 0.5 0.5
+./GPR_LU 50 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=2
 echo "NUM_THREADS=2; Input Size = 60"
-./GPR_parallel_balance 60 0.5 0.5
+./GPR_LU 60 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=2
 echo "NUM_THREADS=2; Input Size = 70"
-./GPR_parallel_balance 70 0.5 0.5
+./GPR_LU 70 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=2
 echo "NUM_THREADS=2; Input Size = 80"
-./GPR_parallel_balance 80 0.5 0.5
+./GPR_LU 80 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=2
 echo "NUM_THREADS=2; Input Size = 90"
-./GPR_parallel_balance 90 0.5 0.5
+./GPR_LU 90 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=2
 echo "NUM_THREADS=2; Input Size = 100"
-./GPR_parallel_balance 100 0.5 0.5
+./GPR_LU 100 0.5 0.5
 echo "============================"
 
 echo "============================"
 export OMP_NUM_THREADS=4
 echo "NUM_THREADS=4; Input Size = 10"
-./GPR_parallel_balance 10 0.5 0.5
+./GPR_LU 10 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=4
 echo "NUM_THREADS=4; Input Size = 20"
-./GPR_parallel_balance 20 0.5 0.5
+./GPR_LU 20 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=4
 echo "NUM_THREADS=4; Input Size = 30"
-./GPR_parallel_balance 30 0.5 0.5
+./GPR_LU 30 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=4
 echo "NUM_THREADS=4; Input Size = 40"
-./GPR_parallel_balance 40 0.5 0.5
+./GPR_LU 40 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=4
 echo "NUM_THREADS=4; Input Size = 50"
-./GPR_parallel_balance 50 0.5 0.5
+./GPR_LU 50 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=4
 echo "NUM_THREADS=4; Input Size = 60"
-./GPR_parallel_balance 60 0.5 0.5
+./GPR_LU 60 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=4
 echo "NUM_THREADS=4; Input Size = 70"
-./GPR_parallel_balance 70 0.5 0.5
+./GPR_LU 70 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=4
 echo "NUM_THREADS=4; Input Size = 80"
-./GPR_parallel_balance 80 0.5 0.5
+./GPR_LU 80 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=4
 echo "NUM_THREADS=4; Input Size = 90"
-./GPR_parallel_balance 90 0.5 0.5
+./GPR_LU 90 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=4
 echo "NUM_THREADS=4; Input Size = 100"
-./GPR_parallel_balance 100 0.5 0.5
+./GPR_LU 100 0.5 0.5
 echo "============================"
 
 echo "============================"
 export OMP_NUM_THREADS=8
 echo "NUM_THREADS=8; Input Size = 10"
-./GPR_parallel_balance 10 0.5 0.5
+./GPR_LU 10 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=8
 echo "NUM_THREADS=8; Input Size = 20"
-./GPR_parallel_balance 20 0.5 0.5
+./GPR_LU 20 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=8
 echo "NUM_THREADS=8; Input Size = 30"
-./GPR_parallel_balance 30 0.5 0.5
+./GPR_LU 30 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=8
 echo "NUM_THREADS=8; Input Size = 40"
-./GPR_parallel_balance 40 0.5 0.5
+./GPR_LU 40 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=8
 echo "NUM_THREADS=8; Input Size = 50"
-./GPR_parallel_balance 50 0.5 0.5
+./GPR_LU 50 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=8
 echo "NUM_THREADS=8; Input Size = 60"
-./GPR_parallel_balance 60 0.5 0.5
+./GPR_LU 60 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=8
 echo "NUM_THREADS=8; Input Size = 70"
-./GPR_parallel_balance 70 0.5 0.5
+./GPR_LU 70 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=8
 echo "NUM_THREADS=8; Input Size = 80"
-./GPR_parallel_balance 80 0.5 0.5
+./GPR_LU 80 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=8
 echo "NUM_THREADS=8; Input Size = 90"
-./GPR_parallel_balance 90 0.5 0.5
+./GPR_LU 90 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=8
 echo "NUM_THREADS=8; Input Size = 100"
-./GPR_parallel_balance 100 0.5 0.5
+./GPR_LU 100 0.5 0.5
 echo "============================"
 
 echo "============================"
 export OMP_NUM_THREADS=16
 echo "NUM_THREADS=16; Input Size = 10"
-./GPR_parallel_balance 10 0.5 0.5
+./GPR_LU 10 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=16
 echo "NUM_THREADS=16; Input Size = 20"
-./GPR_parallel_balance 20 0.5 0.5
+./GPR_LU 20 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=16
 echo "NUM_THREADS=16; Input Size = 30"
-./GPR_parallel_balance 30 0.5 0.5
+./GPR_LU 30 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=16
 echo "NUM_THREADS=16; Input Size = 40"
-./GPR_parallel_balance 40 0.5 0.5
+./GPR_LU 40 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=16
 echo "NUM_THREADS=16; Input Size = 50"
-./GPR_parallel_balance 50 0.5 0.5
+./GPR_LU 50 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=16
 echo "NUM_THREADS=16; Input Size = 60"
-./GPR_parallel_balance 60 0.5 0.5
+./GPR_LU 60 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=16
 echo "NUM_THREADS=16; Input Size = 70"
-./GPR_parallel_balance 70 0.5 0.5
+./GPR_LU 70 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=16
 echo "NUM_THREADS=16; Input Size = 80"
-./GPR_parallel_balance 80 0.5 0.5
+./GPR_LU 80 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=16
 echo "NUM_THREADS=16; Input Size = 90"
-./GPR_parallel_balance 90 0.5 0.5
+./GPR_LU 90 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=16
 echo "NUM_THREADS=16; Input Size = 100"
-./GPR_parallel_balance 100 0.5 0.5
+./GPR_LU 100 0.5 0.5
 echo "============================"
 
 echo "============================"
 export OMP_NUM_THREADS=20
 echo "NUM_THREADS=20; Input Size = 10"
-./GPR_parallel_balance 10 0.5 0.5
+./GPR_LU 10 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=20
 echo "NUM_THREADS=20; Input Size = 20"
-./GPR_parallel_balance 20 0.5 0.5
+./GPR_LU 20 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=20
 echo "NUM_THREADS=20; Input Size = 30"
-./GPR_parallel_balance 30 0.5 0.5
+./GPR_LU 30 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=20
 echo "NUM_THREADS=20; Input Size = 40"
-./GPR_parallel_balance 40 0.5 0.5
+./GPR_LU 40 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=20
 echo "NUM_THREADS=20; Input Size = 50"
-./GPR_parallel_balance 50 0.5 0.5
+./GPR_LU 50 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=20
 echo "NUM_THREADS=20; Input Size = 60"
-./GPR_parallel_balance 60 0.5 0.5
+./GPR_LU 60 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=20
 echo "NUM_THREADS=20; Input Size = 70"
-./GPR_parallel_balance 70 0.5 0.5
+./GPR_LU 70 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=20
 echo "NUM_THREADS=20; Input Size = 80"
-./GPR_parallel_balance 80 0.5 0.5
+./GPR_LU 80 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=20
 echo "NUM_THREADS=20; Input Size = 90"
-./GPR_parallel_balance 90 0.5 0.5
+./GPR_LU 90 0.5 0.5
 echo "============================"
 echo "============================"
 export OMP_NUM_THREADS=20
 echo "NUM_THREADS=20; Input Size = 100"
-./GPR_parallel_balance 100 0.5 0.5
+./GPR_LU 100 0.5 0.5
 echo "============================"

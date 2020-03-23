@@ -22,15 +22,36 @@ void print_matrix(const Matrix & A) {
     std::cout<<'\n';
 }
 
+//==============================================================================
+//                    Matrix Transpose
+//==============================================================================
+void transpose(Matrix & U, const Matrix & L){
+    int n = U.size();
+    #pragma omp parallel for
+    for (int i = 0; i < n; i++){
+        for (int j = 0; j < n; j++){
+            U[i][j] = L[j][i];
+        }
+    }
+}
+
 Matrix create_matrix(int dimension){
     Matrix A(dimension, std::vector<double>(dimension, 0));
+    Matrix A_transpose(dimension, std::vector<double>(dimension, 0));
 
     std::default_random_engine generator;
     std::uniform_int_distribution<int> distribution(1, 9);
 
     for(int i=0; i<dimension;i++){
+        for(int j=0; j<=i;j++){
+            A[i][j] = distribution(generator);
+        }
+    }
+
+    transpose(A_transpose,A);
+    for(int i=0; i<dimension;i++){
         for(int j=0; j<dimension;j++){
-            A[i][j] = distribution(generator);;
+            A[i][j] += A_transpose[i][j];
         }
     }
     return A;
@@ -84,34 +105,29 @@ Matrix multiply_matrix(const Matrix &A, const Matrix &B){
 }
 
 //==============================================================================
-//                    Matrix Transpose
-//==============================================================================
-void transpose(Matrix & U, const Matrix & L){
-    int n = U.size();
-    #pragma omp parallel for
-    for (int i = 0; i < n; i++){
-        for (int j = 0; j < n; j++){
-            U[i][j] = L[j][i];
-        }
-    }
-}
-
-
-//==============================================================================
 //                    Cholesky factorization
 //==============================================================================
 void Cholesky_factorization(Matrix & L, Matrix & U){
     int dimension = U.size();
+    // Decomposing a matrix into Lower Triangular
     for (int i = 0; i < dimension; i++) {
         #pragma omp parallel for
         for (int j = 0; j <= i; j++) {
             int sum = 0;
-            for (int k = 0; k < j; k++){
-                sum += (L[i][k] * L[j][k]);
+            if (j == i){
+                for (int k = 0; k < j; k++){
+                    sum += pow(L[j][k], 2);
+                }
+                L[j][j] = sqrt(U[j][j]-sum);
+            } else {
+                for (int k = 0; k < j; k++){
+                    sum += (L[i][k] * L[j][k]);
+                }
+                L[i][j] = (U[i][j] - sum)/L[j][j];
             }
-            L[i][j] = (U[i][j] - sum)/L[j][j];
         }
     }
+
     transpose(U, L);
 }
 
@@ -139,6 +155,7 @@ int main(int argc, char* argv[]){
     std::cout << "Time elapsed Parallel: " << dur_ms.count() << "ms" << std::endl;
 
     //Matrix A_check = multiply_matrix(L, U);
+    //print_matrix(A_check);
     //std::cout<<"Error: "<<calc_error(A, A_check)<<"\n";
 
     return 0;

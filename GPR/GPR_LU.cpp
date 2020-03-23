@@ -91,8 +91,8 @@ std::vector<points> create_XY(int m){
         for(int j=1; j<=m; j++){
             XY[idx].x = i*h;
             XY[idx].y = j*h;
-        }
             idx++;
+        }
     }
 
     //Debug print
@@ -180,7 +180,7 @@ std::vector<double> create_k(const struct points P, const std::vector<points> & 
 
 //This code suits better for Parallelizing
 //This is a different way of back substitution which can be parallelized
-std::vector<double> back_sub (const Matrix & A, std::vector<double> & y, const int chunk_size){
+std::vector<double> back_sub (const Matrix & A, std::vector<double> & y){
     if(A.size()!=y.size()){
         throw std::runtime_error(std::string("Error: Dimension mismatch\n"));
     }
@@ -191,7 +191,7 @@ std::vector<double> back_sub (const Matrix & A, std::vector<double> & y, const i
     for(int i = n-1; i>=0; i--){
         x[i] = y[i]/A[i][i];
         //This loop can be parallelized. No need of reduction operator
-        #pragma omp parallel for schedule(static, chunk_size)
+        #pragma omp parallel for
         for(int j = i-1; j>=0; j--){
             y[j] -= A[j][i]*x[i];
         }
@@ -222,7 +222,7 @@ std::vector<double> back_sub (const Matrix & A, std::vector<double> & y, const i
 //}
 
 //This loop is better for parallelizing
-std::vector<double> forw_sub (const Matrix & A, std::vector<double> & y, const int chunk_size){
+std::vector<double> forw_sub (const Matrix & A, std::vector<double> & y){
     if(A.size()!=y.size()){
         throw std::runtime_error(std::string("Error: Dimension mismatch\n"));
     }
@@ -233,7 +233,7 @@ std::vector<double> forw_sub (const Matrix & A, std::vector<double> & y, const i
     for(int i = 0; i<n; i++){
         x[i] = y[i]/A[i][i];
         //This loop can be parallelized; Reduction operator needs to be used
-        #pragma omp parallel for schedule(static, chunk_size)
+        #pragma omp parallel for
         for(int j = i+1; j<n; j++){
             y[j] -= A[j][i]*x[i];
         }
@@ -246,7 +246,7 @@ std::vector<double> forw_sub (const Matrix & A, std::vector<double> & y, const i
 //                    LU factorization
 //==============================================================================
 
-void LU_factorization(Matrix & L, Matrix & U, const Matrix & K, const int chunk_size){
+void LU_factorization(Matrix & L, Matrix & U, const Matrix & K){
     //std::cout<<"Matrix K: \n";
     //print_matrix(K);
 
@@ -257,15 +257,15 @@ void LU_factorization(Matrix & L, Matrix & U, const Matrix & K, const int chunk_
     for(int i=0; i<dimension; i++){
         //The internal for loops can be parallelized because each
         //operation is independent of each other
-        #pragma omp parallel for schedule(static, chunk_size)
+        #pragma omp parallel for
         for(int row=i+1; row<dimension; row++){
             //std::cout<<"row: "<<row<<'\n';
             double factor = U[row][i]/U[i][i];
             //std::cout<<"factor: "<<factor<<'\n';
-            for(int col=0; col<dimension; col++){
+            for(int col=i; col<dimension; col++){
                 U[row][col] = U[row][col] - factor*U[i][col];
-                L[row][i] = factor;
             }
+            L[row][i] = factor;
             //std::cout<<"Matrix U: \n";
             //print_matrix(U);
         }
@@ -297,7 +297,7 @@ Matrix ti_k(const Matrix & K, double t){
 
 //GPR - Gaussiam Process Regression
 //m - dimension of the Matrix
-double GPR(int m, const struct points rstar, const int chunk_size){
+double GPR(int m, const struct points rstar){
     int n=m*m;
 
     //Initialize m x m grid of points
@@ -325,28 +325,25 @@ double GPR(int m, const struct points rstar, const int chunk_size){
     //std::cout<<"k: ";
     //print_vector(k);
 
-    std::cout << "========================================" << std::endl;
+
     auto start_time = std::chrono::high_resolution_clock::now();
-
     //LU factorization function
-    LU_factorization(L, U, K_dash, chunk_size);
+    LU_factorization(L, U, K_dash);
+    auto stop_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> dur_ms = stop_time - start_time;
+    std::cout << "LU elapsed: " << dur_ms.count() << "ms" << std::endl;
 
-    std::vector<double> y = forw_sub(L, f, chunk_size);
-    std::vector<double> z = back_sub(U , y, chunk_size);
+    std::vector<double> y = forw_sub(L, f);
+    std::vector<double> z = back_sub(U , y);
+
     //std::cout<<"z: ";
     //print_vector(k);
 
     double fstar = 0;
-    #pragma omp parallel for reduction(+: fstar)
+    #pragma omp parallel for reduction(+:fstar)
     for(int i=0; i<n; i++){
         fstar += k[i]*z[i];
     }
-
-    auto stop_time = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> dur_ms = stop_time - start_time;
-    std::cout << "Chunk_size: " << chunk_size << std::endl;
-    std::cout << "Time elapsed: " << dur_ms.count() << "ms" << std::endl;
-    std::cout << "========================================" << std::endl;
 
     return fstar;
 }
@@ -362,7 +359,10 @@ int main(int argc, char *argv[]){
     points rstar;
     rstar.x = std::atof(argv[2]);
     rstar.y = std::atof(argv[3]);
-    double fstar = GPR(m, rstar, 16);
+
+    double fstar = GPR(m, rstar);
+
     std::cout<<"fstar: "<<fstar<<'\n';
+
     return 0;
 }

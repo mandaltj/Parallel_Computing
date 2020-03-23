@@ -22,15 +22,36 @@ void print_matrix(const Matrix & A) {
     std::cout<<'\n';
 }
 
+//==============================================================================
+//                    Matrix Transpose
+//==============================================================================
+void transpose(Matrix & U, const Matrix & L){
+    int n = U.size();
+    #pragma omp parallel for
+    for (int i = 0; i < n; i++){
+        for (int j = 0; j < n; j++){
+            U[i][j] = L[j][i];
+        }
+    }
+}
+
 Matrix create_matrix(int dimension){
     Matrix A(dimension, std::vector<double>(dimension, 0));
+    Matrix A_transpose(dimension, std::vector<double>(dimension, 0));
 
     std::default_random_engine generator;
     std::uniform_int_distribution<int> distribution(1, 9);
 
     for(int i=0; i<dimension;i++){
+        for(int j=0; j<=i;j++){
+            A[i][j] = distribution(generator);
+        }
+    }
+
+    transpose(A_transpose,A);
+    for(int i=0; i<dimension;i++){
         for(int j=0; j<dimension;j++){
-            A[i][j] = distribution(generator);;
+            A[i][j] += A_transpose[i][j];
         }
     }
     return A;
@@ -65,7 +86,6 @@ double calc_error(const Matrix &A, const Matrix &B){
 //==============================================================================
 //                    Matrix Multiply
 //==============================================================================
-
 Matrix multiply_matrix(const Matrix &A, const Matrix &B){
     int A_row_dimension = A.size();
     int A_col_dimension = A[0].size();
@@ -81,10 +101,8 @@ Matrix multiply_matrix(const Matrix &A, const Matrix &B){
             }
         }
     }
-
     return C;
 }
-
 
 //==============================================================================
 //                    LU factorization
