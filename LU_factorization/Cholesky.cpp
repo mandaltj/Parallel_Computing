@@ -109,25 +109,22 @@ Matrix multiply_matrix(const Matrix &A, const Matrix &B){
 //==============================================================================
 void Cholesky_factorization(Matrix & L, Matrix & U){
     int dimension = U.size();
-    // Decomposing a matrix into Lower Triangular
-    for (int i = 0; i < dimension; i++) {
+
+    for (int j = 0; j < dimension; j++) {
+        float sum = 0;
+        for (int k = 0; k < j; k++) {
+            sum += L[j][k] * L[j][k];
+        }
+        L[j][j] = sqrt(U[j][j] - sum);
         #pragma omp parallel for
-        for (int j = 0; j <= i; j++) {
-            int sum = 0;
-            if (j == i){
-                for (int k = 0; k < j; k++){
-                    sum += pow(L[j][k], 2);
-                }
-                L[j][j] = sqrt(U[j][j]-sum);
-            } else {
-                for (int k = 0; k < j; k++){
-                    sum += (L[i][k] * L[j][k]);
-                }
-                L[i][j] = (U[i][j] - sum)/L[j][j];
+        for (int i = j + 1; i < dimension; i++) {
+            sum = 0;
+            for (int k = 0; k < j; k++) {
+                sum += L[i][k] * L[j][k];
             }
+            L[i][j] = (1.0 / L[j][j] * (U[i][j] - sum));
         }
     }
-
     transpose(U, L);
 }
 
@@ -154,9 +151,9 @@ int main(int argc, char* argv[]){
     std::chrono::duration<double, std::milli> dur_ms = stop_time - start_time;
     std::cout << "Time elapsed Parallel: " << dur_ms.count() << "ms" << std::endl;
 
-    //Matrix A_check = multiply_matrix(L, U);
+    Matrix A_check = multiply_matrix(L, U);
     //print_matrix(A_check);
-    //std::cout<<"Error: "<<calc_error(A, A_check)<<"\n";
+    std::cout<<"Error: "<<calc_error(A, A_check)<<"\n";
 
     return 0;
 }
