@@ -151,9 +151,9 @@ int main(int argc, char* argv[]){
     std::chrono::duration<double, std::milli> dur_ms = stop_time - start_time;
     std::cout << "Time elapsed Parallel: " << dur_ms.count() << "ms" << std::endl;
 
-    Matrix A_check = multiply_matrix(L, U);
+    //Matrix A_check = multiply_matrix(L, U);
     //print_matrix(A_check);
-    std::cout<<"Error: "<<calc_error(A, A_check)<<"\n";
+    //std::cout<<"Error: "<<calc_error(A, A_check)<<"\n";
 
     return 0;
 }
