@@ -3,6 +3,7 @@
 #include <random>
 #include <chrono>
 #include <math.h>
+#include <omp.h>
 
 using Matrix = std::vector<std::vector<double>>;
 
@@ -37,6 +38,7 @@ Matrix create_matrix(int dimension){
 
 Matrix create_identity_matrix(int dimension){
     Matrix ID(dimension, std::vector<double>(dimension, 0));
+    #pragma omp parallel for
     for(int i=0; i<dimension;i++){
         for(int j=0; j<dimension;j++){
             if(i+j == 2*i){
@@ -71,6 +73,7 @@ Matrix multiply_matrix(const Matrix &A, const Matrix &B){
     int B_col_dimension = B[0].size();
     Matrix C(A_row_dimension, std::vector<double>(B_col_dimension, 0));
 
+    #pragma omp parallel for
     for(int i=0; i<A_row_dimension; i++){
         for(int j=0; j<B_col_dimension; j++){
             for(int k=0; k<A_col_dimension; k++){
@@ -78,6 +81,7 @@ Matrix multiply_matrix(const Matrix &A, const Matrix &B){
             }
         }
     }
+
     return C;
 }
 
@@ -85,13 +89,14 @@ Matrix multiply_matrix(const Matrix &A, const Matrix &B){
 //==============================================================================
 //                    LU factorization
 //==============================================================================
-
-void LU_factorization_serial(Matrix & L, Matrix & U){
-    //It is assumed that L and U will be a square matrix
+void LU_factorization(Matrix & L, Matrix & U){
     int dimension = L.size();
 
     //This for loop walks through every column of matrix
     for(int i=0; i<dimension; i++){
+        //The internal for loops can be parallelized because each
+        //operation is independent of each other
+        #pragma omp parallel for
         for(int row=i+1; row<dimension; row++){
             double factor = U[row][i]/U[i][i];
             for(int col=i; col<dimension; col++){
@@ -120,10 +125,10 @@ int main(int argc, char* argv[]){
     Matrix U = A;
 
     auto start_time = std::chrono::high_resolution_clock::now();
-    LU_factorization_serial(L, U);
+    LU_factorization(L, U);
     auto stop_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> dur_ms = stop_time - start_time;
-    std::cout << "Time elapsed Serial: " << dur_ms.count() << "ms" << std::endl;
+    std::cout << "Time elapsed Parallel: " << dur_ms.count() << "ms" << std::endl;
 
     //Matrix A_check = multiply_matrix(L, U);
     //std::cout<<"Error: "<<calc_error(A, A_check)<<"\n";

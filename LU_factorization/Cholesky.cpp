@@ -65,7 +65,6 @@ double calc_error(const Matrix &A, const Matrix &B){
 //==============================================================================
 //                    Matrix Multiply
 //==============================================================================
-
 Matrix multiply_matrix(const Matrix &A, const Matrix &B){
     int A_row_dimension = A.size();
     int A_col_dimension = A[0].size();
@@ -81,30 +80,39 @@ Matrix multiply_matrix(const Matrix &A, const Matrix &B){
             }
         }
     }
-
     return C;
+}
+
+//==============================================================================
+//                    Matrix Transpose
+//==============================================================================
+void transpose(Matrix & U, const Matrix & L){
+    int n = U.size();
+    #pragma omp parallel for
+    for (int i = 0; i < n; i++){
+        for (int j = 0; j < n; j++){
+            U[i][j] = L[j][i];
+        }
+    }
 }
 
 
 //==============================================================================
-//                    LU factorization
+//                    Cholesky factorization
 //==============================================================================
-void LU_factorization_parallel(Matrix & L, Matrix & U){
-    int dimension = L.size();
-
-    //This for loop walks through every column of matrix
-    for(int i=0; i<dimension; i++){
-        //The internal for loops can be parallelized because each
-        //operation is independent of each other
+void Cholesky_factorization(Matrix & L, Matrix & U){
+    int dimension = U.size();
+    for (int i = 0; i < dimension; i++) {
         #pragma omp parallel for
-        for(int row=i+1; row<dimension; row++){
-            double factor = U[row][i]/U[i][i];
-            for(int col=i; col<dimension; col++){
-                U[row][col] = U[row][col] - factor*U[i][col];
-                L[row][i] = factor;
+        for (int j = 0; j <= i; j++) {
+            int sum = 0;
+            for (int k = 0; k < j; k++){
+                sum += (L[i][k] * L[j][k]);
             }
+            L[i][j] = (U[i][j] - sum)/L[j][j];
         }
     }
+    transpose(U, L);
 }
 
 int main(int argc, char* argv[]){
@@ -119,13 +127,13 @@ int main(int argc, char* argv[]){
     Matrix A = create_matrix(dimension);
 
     //Create Identity matrix which will be modified to lower matrix
-    Matrix L = create_identity_matrix(dimension);
+    Matrix L(dimension, std::vector<double>(dimension, 0));
 
     //Create copy of matrix A which will be modified to upper matrix
     Matrix U = A;
 
     auto start_time = std::chrono::high_resolution_clock::now();
-    LU_factorization_parallel(L, U);
+    Cholesky_factorization(L, U);
     auto stop_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> dur_ms = stop_time - start_time;
     std::cout << "Time elapsed Parallel: " << dur_ms.count() << "ms" << std::endl;
