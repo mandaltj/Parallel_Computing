@@ -185,17 +185,21 @@ std::vector<double> back_sub (const Matrix & A, std::vector<double> & y){
         throw std::runtime_error(std::string("Error: Dimension mismatch\n"));
     }
 
+    //unsigned int fops = 0;	
     int n = y.size();
     std::vector<double> x(n);
 
     for(int i = n-1; i>=0; i--){
         x[i] = y[i]/A[i][i];
+        //fops++;
         //This loop can be parallelized. No need of reduction operator
         #pragma omp parallel for
         for(int j = i-1; j>=0; j--){
             y[j] -= A[j][i]*x[i];
+            //fops += 2;
         }
     }
+    std::cout<<"Back Substitution fops: "<<fops<<'\n';		 
     return x;
 }
 
@@ -229,15 +233,19 @@ std::vector<double> forw_sub (const Matrix & A, std::vector<double> & y){
 
     int n = y.size();
     std::vector<double> x(n);
-
+	
+    unsigned int fops = 0;
     for(int i = 0; i<n; i++){
         x[i] = y[i]/A[i][i];
+        //fops++;
         //This loop can be parallelized; Reduction operator needs to be used
         #pragma omp parallel for
         for(int j = i+1; j<n; j++){
             y[j] -= A[j][i]*x[i];
+	    //fops += 2;
         }
     }
+    //std::cout<<"Forw Substitution fops: "<<fops<<'\n';		  
     return x;
 }
 //==============================================================================
@@ -259,23 +267,28 @@ void transpose(Matrix & U, const Matrix & L){
 
 void Cholesky_factorization(Matrix & L, Matrix & U){
     int dimension = U.size();
+    //unsigned int fops = 0;
     // Decomposing a matrix into Lower Triangular
-	for (int j = 0; j < dimension; j++) {
+    for (int j = 0; j < dimension; j++) {
         float sum = 0;
         for (int k = 0; k < j; k++) {
             sum += L[j][k] * L[j][k];
+            //fops += 2;
         }
         L[j][j] = sqrt(U[j][j] - sum);
-        #pragma omp parallel for
+        //fops += 2;
+	#pragma omp parallel for if(j<dimension-100)
         for (int i = j + 1; i < dimension; i++) {
             sum = 0;
             for (int k = 0; k < j; k++) {
                 sum += L[i][k] * L[j][k];
+		//fops += 2;
             }
             L[i][j] = (1.0 / L[j][j] * (U[i][j] - sum));
+	    //fops += 2;
         }
     }
-
+    //std::cout<<"Factorization fops: "<<fops<<'\n';		
     transpose(U, L);
 }
 
