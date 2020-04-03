@@ -122,7 +122,7 @@ void Cholesky_factorization(Matrix & L, Matrix & U){
             for (int k = 0; k < j; k++) {
                 sum += L[i][k] * L[j][k];
             }
-            L[i][j] = (1.0 / L[j][j] * (U[i][j] - sum));
+            L[i][j] = ((1.0 / L[j][j]) * (U[i][j] - sum));
         }
     }
     transpose(U, L);
@@ -145,15 +145,18 @@ int main(int argc, char* argv[]){
     //Create copy of matrix A which will be modified to upper matrix
     Matrix U = A;
 
+    print_matrix(U);
     auto start_time = std::chrono::high_resolution_clock::now();
     Cholesky_factorization(L, U);
     auto stop_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> dur_ms = stop_time - start_time;
     std::cout << "Time elapsed Parallel: " << dur_ms.count() << "ms" << std::endl;
+    print_matrix(L);
+    print_matrix(U);
 
-    //Matrix A_check = multiply_matrix(L, U);
-    //print_matrix(A_check);
-    //std::cout<<"Error: "<<calc_error(A, A_check)<<"\n";
+    Matrix A_check = multiply_matrix(L, U);
+    print_matrix(A_check);
+    std::cout<<"Error: "<<calc_error(A, A_check)<<"\n";
 
     return 0;
 }
