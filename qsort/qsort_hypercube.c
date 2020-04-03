@@ -252,7 +252,7 @@ int main(int argc, char *argv[])
     // MPI_Allreduce can be used with the MPI Communicator sub_hypercube_comm to
     // compute the sum of local_median values on processes of this hypercube
     // ***** Add MPI call here *****
-    MPI_Allreduce(&local_median, &pivot, 1, MPI_INT, MPI_SUM, 0, sub_hypercube_comm);
+    MPI_Allreduce(&local_median, &pivot, 1, MPI_INT, MPI_SUM, &MPI_COMM_WORLD);
     printf("Process_rank: %d; pivot: %d\n", my_id, pivot);
 
     pivot = pivot/sub_hypercube_size;
