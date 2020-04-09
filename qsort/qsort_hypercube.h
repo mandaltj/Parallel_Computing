@@ -101,3 +101,48 @@ void check_list(int *list, int list_size, int my_id, int num_procs) {
 	}
     }
 }
+
+//Function to check that list is sorted in descending order
+void check_list_descending(int *list, int list_size, int my_id, int num_procs) {
+    int tag = 0;
+    int min_nbr = 2147483647;		// Assumes list contains non-negative integers; 6-21-2017
+    int error, local_error;
+    int j, my_min;
+    MPI_Status status; 
+    // Receive smallest list value from process with rank (my_id-1)
+    if (my_id-1 >= 0) {
+	MPI_Recv(&min_nbr, 1, MPI_INT, my_id-1, tag, MPI_COMM_WORLD, &status);
+	// Good practice to check status!
+    }
+    // Check that the local list is sorted and that elements are larger than 
+    // or equal to the largest on process with rank (my_id-1)
+    // (error is set to 1 if a pair of elements is not sorted correctly)
+    local_error = 0;
+    if (list_size > 0) {
+	if (list[0] > min_nbr) local_error = 1; 
+	for (j = 1; j < list_size; j++) {
+	    if (list[j] > list[j-1]) local_error = 1;
+	}
+	my_min = list[list_size-1];
+    } else {					// Modified 6-21-2017
+        my_min = min_nbr;			// Modified 6-21-2017
+    }
+    if (VERBOSE > 1) {
+	printf("[Proc: %0d] check_list: local_error = %d\n", my_id, local_error);
+    }
+    // Send smallest list value to process with rank (my_id+1)
+    if (my_id+1 < num_procs) {
+	MPI_Send(&my_min, 1, MPI_INT, my_id+1, tag, MPI_COMM_WORLD);
+	// Good practice to check status!
+    }
+    // Collect errors from all processes
+    // error = 0;
+    MPI_Reduce(&local_error, &error, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+    if (my_id == 0) {
+	if (error == 0) {
+	    printf("[Proc: %0d] Congratulations. The list has been sorted correctly.\n", my_id);
+	} else {
+	    printf("[Proc: %0d] Error encountered. The list has not been sorted correctly.\n", my_id);
+	}
+    }
+}
