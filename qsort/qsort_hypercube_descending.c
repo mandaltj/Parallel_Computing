@@ -41,7 +41,7 @@ int * merged_list(int * list1, int list1_size, int * list2, int list2_size) {
     int idx2 = 0;
     int idx = 0;
     while ((idx1 < list1_size) && (idx2 < list2_size)) {
-    if (list1[idx1] <= list2[idx2]) {
+    if (list1[idx1] >= list2[idx2]) {
         list[idx] = list1[idx1];
         idx++; idx1++;
     } else {
@@ -72,7 +72,7 @@ int split_list_index (int *list, int list_size, int pivot) {
     int first, last, mid;
     first = 0; last = list_size; mid = (first+last)/2;
     while (first < last) {
-    if (list[mid] <= pivot) {
+    if (list[mid] >= pivot) {
         first = mid+1; mid = (first+last)/2;
     } else {
         last = mid; mid = (first+last)/2;
@@ -91,9 +91,9 @@ int compare_int(const void *a0, const void *b0) {
     int a = *(int *)a0;
     int b = *(int *)b0;
     if (a < b) {
-    return -1;
-    } else if (a > b) {
     return 1;
+    } else if (a > b) {
+    return -1;
     } else {
     return 0;
     }
@@ -255,7 +255,6 @@ int main(int argc, char *argv[])
     MPI_Allreduce(&local_median, &pivot, 1, MPI_INT, MPI_SUM, sub_hypercube_comm);
 
     pivot = pivot/sub_hypercube_size;
-    //printf("Process_rank: %d; pivot: %d\n", my_id, pivot);
 
     // Search for smallest element in list which is larger than pivot
     // Upon return:
@@ -263,18 +262,19 @@ int main(int argc, char *argv[])
     //   list[idx ... list_size-1] > pivot
     idx = split_list_index(list, list_size, pivot);
 
-    list_size_leq = idx;
-    list_size_gt = list_size - idx;
+    list_size_gt = idx;
+    list_size_leq = list_size - idx;
+    //printf("Process_rank: %d; pivot: %d; idx:%d\n", my_id, pivot, idx);
 
     // Communicate with neighbor along dimension k
     nbr_k = neighbor_along_dim_k(my_id, k);
 
     if (nbr_k > my_id) {
-        // MPI-2: Send number of elements greater than pivot
+        // MPI-2: Send number of elements less than pivot
         // ***** Add MPI call here *****
-	MPI_Send(&list_size_gt, 1, MPI_INT, nbr_k%sub_hypercube_size, 0, sub_hypercube_comm);
+	MPI_Send(&list_size_leq, 1, MPI_INT, nbr_k%sub_hypercube_size, 0, sub_hypercube_comm);
 
-        // MPI-3: Receive number of elements less than or equal to pivot
+        // MPI-3: Receive number of elements greater than or equal to pivot
         // ***** Add MPI call here *****
 	MPI_Recv(&nbr_list_size, 1, MPI_INT, nbr_k%sub_hypercube_size, 0, sub_hypercube_comm, &status);	
         
@@ -283,28 +283,28 @@ int main(int argc, char *argv[])
 
         // MPI-4: Send list[idx ... list_size-1] to neighbor
         // ***** Add MPI call here *****
-	MPI_Send(list+list_size_leq, list_size_gt, MPI_INT, nbr_k%sub_hypercube_size, 0, sub_hypercube_comm);	
+	MPI_Send(list+list_size_gt, list_size_leq, MPI_INT, nbr_k%sub_hypercube_size, 0, sub_hypercube_comm);	
         
 	// MPI-5: Receive neighbor's list of elements that are less than or equal to pivot
         // ***** Add MPI call here *****
 	MPI_Recv(nbr_list, nbr_list_size, MPI_INT, nbr_k%sub_hypercube_size, 0, sub_hypercube_comm, &status);	
-       
+	//print_list(nbr_list, nbr_list_size, my_id, num_procs);	       
 	// Merge local list of elements less than or equal to pivot with neighbor's list
         new_list = merged_list(list, idx, nbr_list, nbr_list_size);
 
         // Replace local list with new_list, update size
         free(list); free(nbr_list);
         list = new_list;
-        list_size = list_size_leq+nbr_list_size;
+        list_size = list_size_gt+nbr_list_size;
 
     } else {
-        // MPI-6: Receive number of elements greater than pivot
+        // MPI-6: Receive number of elements less than pivot
         // ***** Add MPI call here *****
 	MPI_Recv(&nbr_list_size, 1, MPI_INT, nbr_k%sub_hypercube_size, 0, sub_hypercube_comm, &status);	
         
-	// MPI-7: Send number of elements less than or equal to pivot
+	// MPI-7: Send number of elements greater than or equal to pivot
         // ***** Add MPI call here *****
-	MPI_Send(&list_size_leq, 1, MPI_INT, nbr_k%sub_hypercube_size, 0, sub_hypercube_comm);
+	MPI_Send(&list_size_gt, 1, MPI_INT, nbr_k%sub_hypercube_size, 0, sub_hypercube_comm);
         
 	// Allocate storage for neighbor's list
         nbr_list = (int *) calloc(nbr_list_size, sizeof(int));
@@ -312,21 +312,22 @@ int main(int argc, char *argv[])
         // MPI-8: Receive neighbor's list of elements that are greater than the pivot
         // ***** Add MPI call here *****
 	MPI_Recv(nbr_list, nbr_list_size, MPI_INT, nbr_k%sub_hypercube_size, 0, sub_hypercube_comm, &status);	
-        
+        //print_list(nbr_list, nbr_list_size, my_id, num_procs);	        
 	// MPI-9: Send list[0 ... idx-1] to neighbor
         // ***** Add MPI call here *****
-	MPI_Send(list, list_size_leq, MPI_INT, nbr_k%sub_hypercube_size, 0, sub_hypercube_comm);	
+	MPI_Send(list, list_size_gt, MPI_INT, nbr_k%sub_hypercube_size, 0, sub_hypercube_comm);	
         
 	// Merge local list of elements greater than pivot with neighbor's list
-        new_list = merged_list(&list[idx], list_size_gt, nbr_list, nbr_list_size);
+        new_list = merged_list(&list[idx], list_size_leq, nbr_list, nbr_list_size);
 
         // Replace local list with new_list, update size
         free(list); free(nbr_list);
         list = new_list;
-        list_size = list_size_gt+nbr_list_size;
+        list_size = list_size_leq+nbr_list_size;
     }
     
     //print_list(list, list_size, my_id, num_procs);
+    //printf("Process_rank: %d; list_size: %d; nbr_list_size: %d; list_size_gt:%d; list_size_leq:%d\n", my_id, list_size, nbr_list_size, list_size_gt, list_size_leq);	
 
     // Deallocate processor group, processor communicator,
     // sub_hypercube_processors array; these variables will be
@@ -345,11 +346,11 @@ int main(int argc, char *argv[])
     }
 
     // Check if list has been sorted correctly
-    check_list(list, list_size, my_id, num_procs);
+    check_list_descending(list, list_size, my_id, num_procs);
 
-    if (VERBOSE > 2) {
-    print_list(list, list_size, my_id, num_procs);
-    }
+    //if (VERBOSE > 2) {
+    //print_list(list, list_size, my_id, num_procs);
+    //}
 
     /*
     MPI_Reduce(&list_size, &total_list_size, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
