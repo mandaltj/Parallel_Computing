@@ -258,7 +258,7 @@ __global__ void L_calculation(double * L, double * U, int dimension, int index){
 }
 
 __global__ void U_calculation(double * L, double * U, int dimension, int index){
-    int thread_id = blockIdx.x;
+    int thread_id = threadIdx.x;
 
     for(int col=index; col<dimension; col++){
         U[(index+thread_id+1)*dimension+col] -= L[(index+thread_id+1)*dimension+index]*U[index*dimension+col];
@@ -271,12 +271,6 @@ __global__ void U_calculation(double * L, double * U, int dimension, int index){
 //==============================================================================
 
 void LU_factorization(Matrix & L, Matrix & U){
-    std::cout<<"Matrix L: \n";
-    print_matrix(L);
-
-    std::cout<<"Matrix U: \n";
-    print_matrix(U);
-
     //std::cout<<"Matrix K: \n";
     //print_matrix(K);
 
@@ -301,18 +295,6 @@ void LU_factorization(Matrix & L, Matrix & U){
         L_calculation<<<1,1>>>(dev_L, dev_U, dimension, i);
         U_calculation<<<1,dimension-(i+1)>>>(dev_L, dev_U, dimension, i);
 
-        //Copy matrices back to Host
-        cudaMemcpy( L.data(), dev_L, dimension*dimension*sizeof(double),cudaMemcpyDeviceToHost );
-        cudaMemcpy( U.data(), dev_U, dimension*dimension*sizeof(double),cudaMemcpyDeviceToHost );
-
-        std::cout<<"\ni: "<<i<<"\n\n";
-
-        std::cout<<"Matrix L: \n";
-        print_matrix(L);
-
-        std::cout<<"Matrix U: \n";
-        print_matrix(U);
-
         /*
         for(int row=i+1; row<dimension; row++){
             //std::cout<<"row: "<<row<<'\n';
@@ -327,8 +309,9 @@ void LU_factorization(Matrix & L, Matrix & U){
         }
         */
     }
-
-
+    //Copy matrices back to Host
+    cudaMemcpy( L.data(), dev_L, dimension*dimension*sizeof(double),cudaMemcpyDeviceToHost );
+    cudaMemcpy( U.data(), dev_U, dimension*dimension*sizeof(double),cudaMemcpyDeviceToHost );
 
     cudaFree(dev_L);
     cudaFree(dev_U);
@@ -390,10 +373,10 @@ double GPR(int m, const struct points rstar){
     std::chrono::duration<double, std::milli> dur_ms = stop_time - start_time;
     std::cout << "LU elapsed: " << dur_ms.count() << "ms" << std::endl;
 
-    Matrix result = multiply_matrix(L,U);
-    std::cout<<"Result\n";
-    print_matrix(result);
-
+    //Matrix result = multiply_matrix(L,U);
+    //std::cout<<"Result\n";
+    //print_matrix(result);
+    
     std::vector<double> y = forw_sub(L, f);
     std::vector<double> z = back_sub(U , y);
 

@@ -252,12 +252,6 @@ std::vector<double> forw_sub (const Matrix & A, std::vector<double> & y){
 //==============================================================================
 
 void LU_factorization(Matrix & L, Matrix & U){
-    std::cout<<"Matrix L: \n";
-    print_matrix(L);
-
-    std::cout<<"Matrix U: \n";
-    print_matrix(U);
-
     //std::cout<<"Matrix K: \n";
     //print_matrix(K);
 
@@ -271,22 +265,15 @@ void LU_factorization(Matrix & L, Matrix & U){
         for(int row=i+1; row<dimension; row++){
             //std::cout<<"row: "<<row<<'\n';
             double factor = U[row*dimension+i]/U[i*dimension+i];
+            L[row*dimension+i] = factor;
+
             //std::cout<<"factor: "<<factor<<'\n';
             for(int col=i; col<dimension; col++){
                 U[row*dimension+col] = U[row*dimension+col] - factor*U[i*dimension+col];
             }
-            L[row*dimension+i] = factor;
             //std::cout<<"Matrix U: \n";
             //print_matrix(U);
         }
-
-        std::cout<<"\ni: "<<i<<"\n\n";
-
-        std::cout<<"Matrix L: \n";
-        print_matrix(L);
-
-        std::cout<<"Matrix U: \n";
-        print_matrix(U);
     }
 
     //This is a check if the LU factorization occure correctly or not
@@ -295,6 +282,12 @@ void LU_factorization(Matrix & L, Matrix & U){
 
     //std::cout<<"Matrix K_check: \n";
     //print_matrix(K_check);
+
+    //std::cout<<"Matrix L: \n";
+    //print_matrix(L);
+
+    //std::cout<<"Matrix U: \n";
+    //print_matrix(U);
 
 
 }
@@ -347,9 +340,9 @@ double GPR(int m, const struct points rstar){
     std::chrono::duration<double, std::milli> dur_ms = stop_time - start_time;
     std::cout << "LU elapsed: " << dur_ms.count() << "ms" << std::endl;
 
-    Matrix result = multiply_matrix(L,U);
-    std::cout<<"Result\n";
-    print_matrix(result);
+    //Matrix result = multiply_matrix(L,U);
+    //std::cout<<"Result\n";
+    //print_matrix(result);
 
     std::vector<double> y = forw_sub(L, f);
     std::vector<double> z = back_sub(U , y);
