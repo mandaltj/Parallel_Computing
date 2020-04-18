@@ -274,6 +274,14 @@ void LU_factorization(Matrix & L, Matrix & U){
             //std::cout<<"Matrix U: \n";
             //print_matrix(U);
         }
+        //std::cout<<"\ni: "<<i<<"\n\n";
+
+        //std::cout<<"Matrix L: \n";
+        //print_matrix(L);
+
+        //std::cout<<"Matrix U: \n";
+        //print_matrix(U);
+
     }
 
     //This is a check if the LU factorization occure correctly or not
@@ -283,11 +291,6 @@ void LU_factorization(Matrix & L, Matrix & U){
     //std::cout<<"Matrix K_check: \n";
     //print_matrix(K_check);
 
-    //std::cout<<"Matrix L: \n";
-    //print_matrix(L);
-
-    //std::cout<<"Matrix U: \n";
-    //print_matrix(U);
 
 
 }

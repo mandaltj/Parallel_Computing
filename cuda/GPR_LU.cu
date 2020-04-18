@@ -251,16 +251,10 @@ std::vector<double> forw_sub (const Matrix & A, std::vector<double> & y){
 //==============================================================================
 //                    GPU Code
 //==============================================================================
-__global__ void L_calculation(double * L, double * U, int dimension, int index){
-    for(int i=index+1; i<dimension; i++){
-        L[i*dimension+index] = U[i*dimension+index]/U[index*dimension+index];
-    }
-}
-
-__global__ void U_calculation(double * L, double * U, int dimension, int index){
-    int thread_id = threadIdx.x;
-
-    for(int col=index; col<dimension; col++){
+__global__ void LU_gpu(double * L, double * U, int dimension, int index){
+	int thread_id = threadIdx.x;
+	L[(index+1+thread_id)*dimension+index] = U[(index+1+thread_id)*dimension+index]/U[index*dimension+index];
+	for(int col=index; col<dimension; col++){
         U[(index+thread_id+1)*dimension+col] -= L[(index+thread_id+1)*dimension+index]*U[index*dimension+col];
     }
 }
@@ -292,8 +286,7 @@ void LU_factorization(Matrix & L, Matrix & U){
     for(int i=0; i<dimension; i++){
         //The internal for loops can be parallelized because each
         //operation is independent of each other
-        L_calculation<<<1,1>>>(dev_L, dev_U, dimension, i);
-        U_calculation<<<1,dimension-(i+1)>>>(dev_L, dev_U, dimension, i);
+        LU_gpu<<<1,dimension-(i+1)>>>(dev_L, dev_U, dimension, i);
 
         /*
         for(int row=i+1; row<dimension; row++){
@@ -376,7 +369,7 @@ double GPR(int m, const struct points rstar){
     //Matrix result = multiply_matrix(L,U);
     //std::cout<<"Result\n";
     //print_matrix(result);
-    
+
     std::vector<double> y = forw_sub(L, f);
     std::vector<double> z = back_sub(U , y);
 
