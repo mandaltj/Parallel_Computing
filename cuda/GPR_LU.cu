@@ -252,10 +252,12 @@ std::vector<double> forw_sub (const Matrix & A, std::vector<double> & y){
 //                    GPU Code
 //==============================================================================
 __global__ void LU_gpu(double * L, double * U, int dimension, int index){
-	int thread_id = threadIdx.x;
-	L[(index+1+thread_id)*dimension+index] = U[(index+1+thread_id)*dimension+index]/U[index*dimension+index];
-	for(int col=index; col<dimension; col++){
-        U[(index+thread_id+1)*dimension+col] -= L[(index+thread_id+1)*dimension+index]*U[index*dimension+col];
+    int thread_id = (blockDim.x*blockIdx.x)+threadIdx.x;
+    if(thread_id<(dimension-(index+1))) {
+        L[(index+1+thread_id)*dimension+index] = U[(index+1+thread_id)*dimension+index]/U[index*dimension+index];
+        for(int col=index; col<dimension; col++){
+            U[(index+thread_id+1)*dimension+col] -= L[(index+thread_id+1)*dimension+index]*U[index*dimension+col];
+        }
     }
 }
 
@@ -272,7 +274,8 @@ void LU_factorization(Matrix & L, Matrix & U){
     int dimension = int(sqrt(U.size()));
 
     //Memory allocation on GPU
-    //int NumThreads = 1;
+    int NumThreads = 32;
+    int NumBlocks = (dimension/NumThreads)+1;
     double * dev_U;
     double * dev_L;
     cudaMalloc((void **)&dev_U, dimension*dimension*sizeof(double));
@@ -286,7 +289,19 @@ void LU_factorization(Matrix & L, Matrix & U){
     for(int i=0; i<dimension; i++){
         //The internal for loops can be parallelized because each
         //operation is independent of each other
-        LU_gpu<<<1,dimension-(i+1)>>>(dev_L, dev_U, dimension, i);
+        LU_gpu<<<NumBlocks,NumThreads>>>(dev_L, dev_U, dimension, i);
+        //LU_gpu<<<1,100>>>(dev_L, dev_U, dimension, i);
+        //cudaMemcpy( L.data(), dev_L, dimension*dimension*sizeof(double),cudaMemcpyDeviceToHost );
+        //cudaMemcpy( U.data(), dev_U, dimension*dimension*sizeof(double),cudaMemcpyDeviceToHost );
+
+
+        //std::cout<<"\ni: "<<i<<"\n\n";
+
+        //std::cout<<"Matrix L: \n";
+        //print_matrix(L);
+
+        //std::cout<<"Matrix U: \n";
+        //print_matrix(U);
 
         /*
         for(int row=i+1; row<dimension; row++){
