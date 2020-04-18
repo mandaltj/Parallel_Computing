@@ -410,6 +410,8 @@ double GPR(int m, const struct points rstar){
 }
 
 int main(int argc, char *argv[]){
+    cudaSetDevice(1);
+
     //Check input arguments
     if (argc < 4){
         std::cout << "Error: Please enter 1) Matrix Dimension; \n";
