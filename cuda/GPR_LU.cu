@@ -5,6 +5,8 @@
 #include <chrono>
 #include <cuda.h>
 
+int NumThreads;
+
 //https://stackoverflow.com/questions/18553210/how-to-implement-matlabs-mldivide-a-k-a-the-backslash-operator
 
 #define FIXED_FLOAT(x) std::fixed<<std::setprecision(4)<<(x)
@@ -274,7 +276,7 @@ void LU_factorization(Matrix & L, Matrix & U){
     int dimension = int(sqrt(U.size()));
 
     //Memory allocation on GPU
-    int NumThreads = 32;
+    //int NumThreads = 32;
     int NumBlocks = (dimension/NumThreads)+1;
     double * dev_U;
     double * dev_L;
@@ -413,6 +415,7 @@ int main(int argc, char *argv[]){
     points rstar;
     rstar.x = std::atof(argv[2]);
     rstar.y = std::atof(argv[3]);
+    NumThreads = std::atoi(argv[4]);
 
     double fstar = GPR(m, rstar);
 
