@@ -281,23 +281,23 @@ void LU_factorization(Matrix & L, Matrix & U){
     double * dev_U;
     double * dev_L;
 
-    auto malloc_start_time = std::chrono::high_resolution_clock::now();
+    //auto malloc_start_time = std::chrono::high_resolution_clock::now();
     cudaMalloc((void **)&dev_U, dimension*dimension*sizeof(double));
     cudaMalloc((void **)&dev_L, dimension*dimension*sizeof(double));
-    auto malloc_stop_time = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> malloc_dur_ms = malloc_stop_time - malloc_start_time;
-    std::cout << "Device Malloc elapsed: " << malloc_dur_ms.count() << "ms" << std::endl;
+    //auto malloc_stop_time = std::chrono::high_resolution_clock::now();
+    //std::chrono::duration<double, std::milli> malloc_dur_ms = malloc_stop_time - malloc_start_time;
+    //std::cout << "Device Malloc elapsed: " << malloc_dur_ms.count() << "ms" << std::endl;
 
-    auto hdcpy_start_time = std::chrono::high_resolution_clock::now();
+    //auto hdcpy_start_time = std::chrono::high_resolution_clock::now();
     //Copy U matrix from Host to device(GPU)
     cudaMemcpy(dev_U, U.data(), dimension*dimension*sizeof(double), cudaMemcpyHostToDevice);
     cudaMemcpy(dev_L, L.data(), dimension*dimension*sizeof(double), cudaMemcpyHostToDevice);
-    auto hdcpy_stop_time = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> hdcpy_dur_ms = hdcpy_stop_time - hdcpy_start_time;
-    std::cout << "Host to Device Copy elapsed: " << hdcpy_dur_ms.count() << "ms" << std::endl;
+    //auto hdcpy_stop_time = std::chrono::high_resolution_clock::now();
+    //std::chrono::duration<double, std::milli> hdcpy_dur_ms = hdcpy_stop_time - hdcpy_start_time;
+    //std::cout << "Host to Device Copy elapsed: " << hdcpy_dur_ms.count() << "ms" << std::endl;
 
 
-    auto comp_start_time = std::chrono::high_resolution_clock::now();
+    //auto comp_start_time = std::chrono::high_resolution_clock::now();
     //This for loop walks through every column of matrix
     for(int i=0; i<dimension; i++){
         //The internal for loops can be parallelized because each
@@ -330,17 +330,17 @@ void LU_factorization(Matrix & L, Matrix & U){
         }
         */
     }
-    auto comp_stop_time = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> comp_dur_ms = comp_stop_time - comp_start_time;
-    std::cout << "Kernel Computation elapsed: " << comp_dur_ms.count() << "ms" << std::endl;
+    //auto comp_stop_time = std::chrono::high_resolution_clock::now();
+    //std::chrono::duration<double, std::milli> comp_dur_ms = comp_stop_time - comp_start_time;
+    //std::cout << "Kernel Computation elapsed: " << comp_dur_ms.count() << "ms" << std::endl;
 
     //Copy matrices back to Host
-    auto dhcpy_start_time = std::chrono::high_resolution_clock::now();
+    //auto dhcpy_start_time = std::chrono::high_resolution_clock::now();
     cudaMemcpy( L.data(), dev_L, dimension*dimension*sizeof(double),cudaMemcpyDeviceToHost );
     cudaMemcpy( U.data(), dev_U, dimension*dimension*sizeof(double),cudaMemcpyDeviceToHost );
-    auto dhcpy_stop_time = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> dhcpy_dur_ms = dhcpy_stop_time - dhcpy_start_time;
-    std::cout << "Device to Host Copy elapsed: " << dhcpy_dur_ms.count() << "ms" << std::endl;
+    //auto dhcpy_stop_time = std::chrono::high_resolution_clock::now();
+    //std::chrono::duration<double, std::milli> dhcpy_dur_ms = dhcpy_stop_time - dhcpy_start_time;
+    //std::cout << "Device to Host Copy elapsed: " << dhcpy_dur_ms.count() << "ms" << std::endl;
 
     cudaFree(dev_L);
     cudaFree(dev_U);
@@ -395,12 +395,12 @@ double GPR(int m, const struct points rstar){
     //print_vector(k);
 
 
-    //auto start_time = std::chrono::high_resolution_clock::now();
+    auto start_time = std::chrono::high_resolution_clock::now();
     //LU factorization function
     LU_factorization(L, U);
-    //auto stop_time = std::chrono::high_resolution_clock::now();
-    //std::chrono::duration<double, std::milli> dur_ms = stop_time - start_time;
-    //std::cout << "LU elapsed: " << dur_ms.count() << "ms" << std::endl;
+    auto stop_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double, std::milli> dur_ms = stop_time - start_time;
+    std::cout << "LU elapsed: " << dur_ms.count() << "ms" << std::endl;
 
     //Matrix result = multiply_matrix(L,U);
     //std::cout<<"Result\n";
