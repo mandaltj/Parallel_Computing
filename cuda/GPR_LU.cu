@@ -263,6 +263,23 @@ __global__ void LU_gpu(double * L, double * U, int dimension, int index){
     }
 }
 
+__global__ void L_gpu(double * L, double * U, int dimension, int index){
+    int thread_id = (blockDim.x*blockIdx.x)+threadIdx.x;
+    if(thread_id<(dimension-(index+1))) {
+        L[(index+1+thread_id)*dimension+index] = U[(index+1+thread_id)*dimension+index]/U[index*dimension+index];
+    }
+    //__syncthreads();
+}
+
+__global__ void U_gpu(double * L, double * U, int dimension, int index, int row_index){
+    int thread_id = (blockDim.x*blockIdx.x)+threadIdx.x;
+    if(thread_id<(dimension-index)) {
+        //for(int col=index; col<dimension; col++){
+        U[(row_index*dimension)+index+thread_id] -= L[(row_index*dimension)+index]*U[(index*dimension)+index+thread_id];
+        //}
+    }
+    //__syncthreads();
+}
 
 //==============================================================================
 //                    LU factorization
@@ -270,7 +287,7 @@ __global__ void LU_gpu(double * L, double * U, int dimension, int index){
 
 void LU_factorization(Matrix & L, Matrix & U){
     //std::cout<<"Matrix K: \n";
-    //print_matrix(K);
+    //print_matrix(U);
 
     //It is assumed that U will be a square matrix
     int dimension = int(sqrt(U.size()));
@@ -278,6 +295,7 @@ void LU_factorization(Matrix & L, Matrix & U){
     //Memory allocation on GPU
     //int NumThreads = 32;
     int NumBlocks = (dimension/NumThreads)+1;
+    std::cout<<"NumBlocks: "<<NumBlocks<<" NumThreads:"<<NumThreads<<'\n';
     double * dev_U;
     double * dev_L;
 
@@ -302,8 +320,13 @@ void LU_factorization(Matrix & L, Matrix & U){
     for(int i=0; i<dimension; i++){
         //The internal for loops can be parallelized because each
         //operation is independent of each other
-        LU_gpu<<<NumBlocks,NumThreads>>>(dev_L, dev_U, dimension, i);
-        //LU_gpu<<<1,100>>>(dev_L, dev_U, dimension, i);
+        L_gpu<<<NumBlocks,NumThreads>>>(dev_L, dev_U, dimension, i);
+        for(int row=i+1; row<dimension; row++){
+            U_gpu<<<NumBlocks,NumThreads>>>(dev_L, dev_U, dimension, i, row);
+        }
+
+        //LU_gpu<<<NumBlocks,NumThreads>>>(dev_L, dev_U, dimension, i);
+
         //cudaMemcpy( L.data(), dev_L, dimension*dimension*sizeof(double),cudaMemcpyDeviceToHost );
         //cudaMemcpy( U.data(), dev_U, dimension*dimension*sizeof(double),cudaMemcpyDeviceToHost );
 
