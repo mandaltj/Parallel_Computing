@@ -1,0 +1,234 @@
+============================
+10 0.5 0.5 32
+LU elapsed: 85.5873ms
+fstar: 1.00573
+============================
+============================
+20 0.5 0.5 32
+LU elapsed: 235.061ms
+fstar: 0.952832
+============================
+============================
+30 0.5 0.5 32
+LU elapsed: 959.539ms
+fstar: 0.984867
+============================
+============================
+40 0.5 0.5 32
+LU elapsed: 2916.63ms
+fstar: 1.00409
+============================
+============================
+50 0.5 0.5 32
+LU elapsed: 7511.1ms
+fstar: 0.987547
+============================
+============================
+60 0.5 0.5 32
+LU elapsed: 17298.4ms
+fstar: 0.984212
+============================
+============================
+70 0.5 0.5 32
+LU elapsed: 44908.4ms
+fstar: 1.02763
+============================
+============================
+80 0.5 0.5 32
+LU elapsed: 144908ms
+fstar: 1.00909
+============================
+============================
+90 0.5 0.5 32
+LU elapsed: 286603ms
+fstar: 0.999592
+============================
+============================
+100 0.5 0.5 32
+LU elapsed: 583990ms
+fstar: 0.999055
+============================
+============================
+10 0.5 0.5 64
+LU elapsed: 78.8504ms
+fstar: 1.00573
+============================
+============================
+20 0.5 0.5 64
+LU elapsed: 238.003ms
+fstar: 0.952832
+============================
+============================
+30 0.5 0.5 64
+LU elapsed: 962.8ms
+fstar: 0.984867
+============================
+============================
+40 0.5 0.5 64
+LU elapsed: 2916.95ms
+fstar: 1.00409
+============================
+============================
+50 0.5 0.5 64
+LU elapsed: 7513.63ms
+fstar: 0.987547
+============================
+============================
+60 0.5 0.5 64
+LU elapsed: 17353.2ms
+fstar: 0.984212
+============================
+============================
+70 0.5 0.5 64
+LU elapsed: 44717.6ms
+fstar: 1.02763
+============================
+============================
+80 0.5 0.5 64
+LU elapsed: 144199ms
+fstar: 1.00909
+============================
+============================
+90 0.5 0.5 64
+LU elapsed: 293024ms
+fstar: 0.999592
+============================
+============================
+100 0.5 0.5 64
+LU elapsed: 642398ms
+fstar: 0.999055
+============================
+============================
+10 0.5 0.5 128
+LU elapsed: 80.8921ms
+fstar: 1.00573
+============================
+============================
+20 0.5 0.5 128
+LU elapsed: 237.029ms
+fstar: 0.952832
+============================
+============================
+30 0.5 0.5 128
+LU elapsed: 963.115ms
+fstar: 0.984867
+============================
+============================
+40 0.5 0.5 128
+LU elapsed: 2920.4ms
+fstar: 1.00409
+============================
+============================
+50 0.5 0.5 128
+LU elapsed: 7574.5ms
+fstar: 0.987547
+============================
+============================
+60 0.5 0.5 128
+LU elapsed: 17448.8ms
+fstar: 0.984212
+============================
+============================
+70 0.5 0.5 128
+LU elapsed: 44776.9ms
+fstar: 1.02763
+============================
+============================
+80 0.5 0.5 128
+LU elapsed: 143946ms
+fstar: 1.00909
+============================
+============================
+90 0.5 0.5 128
+LU elapsed: 290779ms
+fstar: 0.999592
+============================
+============================
+100 0.5 0.5 128
+LU elapsed: 639540ms
+fstar: 0.999055
+============================
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@gpu64-3001>
+Subject: Job 10991398: <GPR_LU> in cluster <Main_Compute> Done
+
+Job <GPR_LU> was submitted from host <login4> by user <tapojyoti.mandal> in cluster <Main_Compute>.
+Job was executed on host(s) <20*gpu64-3001>, in queue <sn_regular>, as user <tapojyoti.mandal> in cluster <Main_Compute>.
+</home/tapojyoti.mandal> was used as the home directory.
+</scratch/user/tapojyoti.mandal/Parallel_Computing/cuda> was used as the working directory.
+Started at Sat Apr 18 22:02:37 2020
+Results reported on Sat Apr 18 22:59:57 2020
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#BSUB -n 20 -R 'select[gpu] rusage[mem=1024] span[ptile=20]' -M 1024
+#BSUB -J GPR_LU -o GPR_LU.%J -L /bin/bash -W 3:00
+##
+##NECESSARY JOB SPECIFICATIONS
+##BSUB -J JobName             # Set the job name to "JobName"
+##BSUB -L /bin/bash           # Uses the bash login shell to initialize the job's execution environment.
+##BSUB -W hh:mm               # Sets job's runtime wall-clock limit in hours:minutes or just minutes (-mm)
+##BSUB -n NNN                 # NNN: total number of cores/jobslots to allocate for the job
+##BSUB -R "select[node-type]" # Select node-type: nxt, mem256gb, gpu, phi, mem1t, mem2t ...
+##BSUB -R "span[ptile=4]"    # XX:  number of cores/jobslots per node to use. Also, a node selection criterion.
+##BSUB -R "rusage[mem=nnn]"   # Reserves nnn MBs per process/CPU for the job
+##BSUB -M mm                  # Sets the per process enforceable memory limit to nnn MB
+##BSUB -o HW1_part1.%J       # Send stdout and stderr to "OUTPUTFILE.[jobID]"
+##BSUB -R "select[gpu]"       #Select a node with GPU
+#
+# <--- at this point the current working directory is the one you submitted the job from.
+#
+module load intel/2017A CUDA  # load Intel software stack
+
+nvcc -O3 -o GPR_LU GPR_LU.cu
+
+#
+echo "============================"
+echo "10 0.5 0.5 32"
+./GPR_LU 10 0.5 0.5 32
+echo "============================"
+echo "============================"
+echo "20 0.5 0.5 32"
+./GPR_LU 20 0.5 0.5 32
+echo "============================"
+echo "============================"
+echo "30 0.5 0.5 32"
+./GPR_LU 30 0.5 0.5 32
+echo "============================"
+echo "============================"
+echo "40 0.5 0.5 32"
+./GPR_LU 40 0.5 0.5 32
+echo "============================"
+echo "============================"
+echo "50 0.5 0.5 32"
+./GPR_LU 50 0.5 0.5 32
+echo "============================"
+echo "============================"
+echo "60 0.5 0.5 32"
+./GPR_LU 60 0.5 0.5 32
+echo "============================"
+echo "============================"
+echo "70 0.5 0.5 32"
+./GPR_LU 70 0.5 0.5 32
+echo "============================"
+
+(... more ...)
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time :                                   4998.12 sec.
+    Max Memory :                                 3102 MB
+    Average Memory :                             2380.51 MB
+    Total Requested Memory :                     20480.00 MB
+    Delta Memory :                               17378.00 MB
+    Max Processes :                              7
+    Max Threads :                                8
+
+The output (if any) is above this job summary.
+

@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <chrono>
 #include <cuda.h>
+#include <cmath>
 
 int NumThreads;
 
@@ -274,6 +275,20 @@ __global__ void L_gpu(double * L, double * U, int dimension, int index){
 __global__ void U_gpu(double * L, double * U, int dimension, int index, int row_index){
     int thread_id = (blockDim.x*blockIdx.x)+threadIdx.x;
     if(thread_id<(dimension-index)) {
+        //for(int col=index; col<dimension; col++){
+        U[(row_index*dimension)+index+thread_id] -= L[(row_index*dimension)+index]*U[(index*dimension)+index+thread_id];
+        //}
+    }
+    //__syncthreads();
+}
+
+__global__ void U_gpu(double * L, double * U, int dimension, int index, int row_index){
+    int thread_id = (blockDim.x*blockIdx.x)+threadIdx.x;
+    int work_per_thread = ceil((dimension-index)/blockDim.x);
+    if((thread_id+1)*work_per_thread > dimension-index){
+        work_per_thread = (dimension-index)-
+    }
+    if((thread_id*work_per_thread)<(dimension-index)) {
         //for(int col=index; col<dimension; col++){
         U[(row_index*dimension)+index+thread_id] -= L[(row_index*dimension)+index]*U[(index*dimension)+index+thread_id];
         //}
