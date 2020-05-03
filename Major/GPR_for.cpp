@@ -120,7 +120,7 @@ std::vector<double> create_f(int m, const std::vector<points> & XY){
     double l1 = 2/m;
     double l2 = 2/m;
 
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for(int i=0; i<n; i++){
         double d = 0.02*distribution(generator);
         f[i] = d + kernel_scalar(XY[i], idk_point, l1, l2) + (XY[i].x*0.2 + XY[i].y*0.1);
@@ -137,7 +137,7 @@ Matrix create_K0(int n, const std::vector<points> & XY,
                   const double l1, const double l2){
     Matrix K0(n, std::vector<double>(n, 0));
 
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for(int i=0; i<n; i++){
         for(int j=0; j<n; j++){
             K0[i][j] = kernel_scalar(XY[i], XY[j], l1, l2);
@@ -154,7 +154,7 @@ Matrix create_K(const std::vector<int> & itrain,
     int n = itrain.size();
     Matrix K(n, std::vector<double>(n, 0));
 
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for(int i=0; i<n; i++){
         for(int j=0; j<n; j++){
             K[i][j] = K0[itrain[i]][itrain[j]];
@@ -168,7 +168,7 @@ Matrix create_k_small(const Matrix & K0, const std::vector<int> & itrain, const 
     int ntest = itest.size();
     Matrix k(ntest, std::vector<double>(ntrain, 0));
 
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for(int i=0; i<ntest; i++){
         for(int j=0; j<ntrain; j++){
             k[i][j] = K0[itest[i]][itrain[j]];
@@ -240,7 +240,7 @@ Matrix ti_k(const Matrix & K, double t){
 std::vector<double> mul_matvec(const Matrix & A, const std::vector<double> & x){
     int n = A.size();
     std::vector<double> y(n, 0);
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for(int i=0; i<n; i++){
         double sum = 0;
         for(int j=0; j<n; j++){
@@ -303,7 +303,7 @@ std::vector<double> back_sub (const Matrix & A, std::vector<double> & y){
     for(int i = n-1; i>=0; i--){
         x[i] = y[i]/A[i][i];
         //This loop can be parallelized. No need of reduction operator
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for(int j = i-1; j>=0; j--){
             y[j] -= A[j][i]*x[i];
         }
@@ -345,7 +345,7 @@ std::vector<double> forw_sub (const Matrix & A, std::vector<double> & y){
     for(int i = 0; i<n; i++){
         x[i] = y[i]/A[i][i];
         //This loop can be parallelized; Reduction operator needs to be used
-        #pragma omp parallel for
+        //#pragma omp parallel for
         for(int j = i+1; j<n; j++){
             y[j] -= A[j][i]*x[i];
         }
@@ -369,7 +369,7 @@ void LU_factorization(Matrix & L, Matrix & U, const Matrix & K){
     for(int i=0; i<dimension; i++){
         //The internal for loops can be parallelized because each
         //operation is independent of each other
-        #pragma omp parallel for schedule(guided)
+        //#pragma omp parallel for schedule(guided)
         for(int row=i+1; row<dimension; row++){
             //std::cout<<"row: "<<row<<'\n';
             double factor = U[row][i]/U[i][i];
@@ -423,7 +423,7 @@ void Cholesky_factorization(Matrix & L, Matrix & U){
         }
         L[j][j] = sqrt(U[j][j] - sum);
         //fops += 2;
-    #pragma omp parallel for if(j<dimension-100)
+        //#pragma omp parallel for if(j<dimension-100)
         for (int i = j + 1; i < dimension; i++) {
             sum = 0;
             for (int k = 0; k < j; k++) {
@@ -544,6 +544,7 @@ int main(int argc, char *argv[]){
     //std::cout<<Lparam.size()<<'\n';
 
     auto start_time = std::chrono::high_resolution_clock::now();
+    #pragma omp parallel for collapse (2)
     for(int i=0; i<Lparam.size(); i++){
         for(int j=0; j<Lparam.size(); j++){
             std::vector<double> ftest = GPR(XY, ftrain, itest, itrain, Tparam, Lparam[i], Lparam[j]);
